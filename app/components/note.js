@@ -1,13 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, View,ScrollView,TouchableOpacity,TextInput } from 'react-native';
 
-export default class Note extends React.Component {
+ class Note extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      show:false
+
+
+    };
+  } 
 	render() {
 		return (
 			<View key={this.props.keyval} style={styles.note}>
 				<Text style={styles.noteText}>{this.props.val.date}</Text>
 				<Text style={styles.noteText}>{this.props.val.note}</Text>
 				<Text style={styles.noteTextDate}>{this.props.val.datee}</Text>
+				<Text style={styles.noteTextDate}>{this.props.val.text}</Text>
 
 				<TouchableOpacity onPress={this.props.deleteMethod} style={styles.noteDelete}>
 					<Text style={styles.noteDeleteText}>Delete</Text>
@@ -19,7 +28,7 @@ export default class Note extends React.Component {
 	const styles = StyleSheet.create({
 		note: {
 			position:'relative',
-			padding: 20,
+			padding: 20, 
 			paddingRight:100,
 			borderBottomWidth:2,
 			borderBottomColor:'black',
@@ -41,3 +50,5 @@ export default class Note extends React.Component {
 		
 		}
 	});
+
+	export default Note;
