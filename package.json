@@ -25,8 +25,10 @@
     "react-native-background-timer": "^2.0.1",
     "react-native-button": "^2.3.0",
     "react-native-datepicker-dialog": "0.0.9",
+    "react-native-fontawesome": "^5.7.0",
     "react-native-modal-datetime-picker": "^5.1.0",
     "react-native-modalbox": "^1.5.0",
-    "react-native-ringtone-manager": "^0.1.1"
+    "react-native-ringtone-manager": "^0.1.1",
+    "react-native-vector-icons": "^4.6.0"
   }
 }

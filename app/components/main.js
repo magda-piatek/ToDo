@@ -1,25 +1,31 @@
 import React from 'react';
-import { Modal, AppRegistry, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { KeyboardAvoidingView , Modal, AppRegistry, StyleSheet, Text, View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import Note from './note';
+import Modalw from './modal';
 import DeleteBtn from './deleteBtn';
 import { Vibration } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
+
 import moment from 'moment';
 const PATTERN = [1000, 2000, 3000]
 
- class Main extends React.Component {
+class Main extends React.Component {
 
   constructor(props){
     super(props);
     this.state = {
       noteArray: [],
+      noteArray2: [],
       noteText:'',
       isVisible:false,
       noteData: '',
       now:'',
-      ModalVisibleStatus:false,
+      visible:false,
       myText:'',
-      text: ''
+      text: '',
+      index:'',
+      count:0
 
 
     };
@@ -29,38 +35,35 @@ const PATTERN = [1000, 2000, 3000]
     Vibration.vibrate(PATTERN);
 
     this.setState({
-      ModalVisibleStatus: visible, 
-      myText: b,
-      show:true,
-      text:'done'
+      visible: visible, 
+      noteText: b
+      
     })
   }
 
-  Hide = (visible) => {
-    this.setState({
-      ModalVisibleStatus: false
-          });
-  }
-  run = (a,b) =>{
 
+  run = (a,b) =>{
+    var self = this;
     this._interval = setInterval(() => {
       this.setState({
-        now: moment().format()
+        now: moment().format() 
 
       });
 
       console.log(this.state.now + "Das" + a);
       if(this.state.now == a){
+
         this.ShowModalFunction(true,b);
+
       }
     }, 1000); 
 
-  }
- 
+  } 
+
   handlePicker = (datetime) => {
     this.setState({
       isVisible:false,
-      noteData: moment(datetime).format()
+      noteData: moment(datetime).format() 
 
     })
   }
@@ -84,74 +87,26 @@ const PATTERN = [1000, 2000, 3000]
   noteText = (typeText) => {
     this.setState({noteText:typeText});
   }
-
-
-  render() {
-
-    let notes = this.state.noteArray.map((val,key) => {
-      return <Note key={key} keyval={key} val={val} deleteMethod={() => this.deleteNote(key)} /> })
-
-    return (
-
-      <View style={styles.container}>
-      <Modal animationType="slide" transparent={false} visible={this.state.ModalVisibleStatus} onRequestClose={() => {alert('Modal has been closed.');}}>
-      <View style={{marginTop: 22}}>
-      <View>
-      <Text style={styles.text}> {this.state.myText}</Text>
-     
-         <TouchableOpacity onPress={() => this.Hide()} style={styles.noteDelete}>
-      <Text style={styles.noteDeleteText}>Done</Text>
-      </TouchableOpacity>
-      </View> 
-      </View>
-      </Modal>
-      <View style={styles.header}>
-      <Text style={styles.textHeader}>sth</Text>
-      </View>
-
-      <ScrollView style={styles.scrollContainer}>
-      {notes}
-      </ScrollView>
-      <View style={styles.footer}>
-      <TextInput onChangeText={this.noteText}
-      style={styles.textInput}
-      placeholder="Write"
-      placeholderTextColor="red" />
-
-      </View>
-      <Text style={styles.text}> {this.noteData} </Text>
-
-      <View style={{ flex: 1 }}>
-      <TouchableOpacity onPress={this.showPicker}>
-      <Text>Show DatePicker</Text>
-      </TouchableOpacity>
-      </View>
-      <DateTimePicker
-      isVisible={this.state.isVisible}
-      onConfirm={this.handlePicker}
-      onCancel={this.hidePicker}
-      mode={'datetime'}
-      />
-      <TouchableOpacity style={styles.addButton} onPress={this.addNote}>
-      <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
-      </View> 
-      );
-  } 
   addNote = () =>{
-
+    console.log(this.state.noteArray)
     var d = new Date;
     this.state.noteArray.push({
-      'date' : d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds(), 
+      'id':this.state.count,
+      'date' : moment().format(), 
       'note':this.state.noteText,
       'datee': this.state.noteData,
       'text': this.state.text
     });
+    this.state.noteArray2.push({
+      'id':this.state.count,
+      'note':this.state.noteText
+    });
     this.setState({noteArray: this.state.noteArray});
-    this.setState({noteText:''});
-    this.setState({noteData:''});
-    this.setState({text:''});
+    this.setState({noteArray2: this.state.noteArray2});
+
     this.run(this.state.noteData,this.state.noteText);
+    this.state.count++;
+
   }
 
   deleteNote(key){
@@ -159,6 +114,96 @@ const PATTERN = [1000, 2000, 3000]
     this.setState({noteArray:this.state.noteArray});
     console.log(this.state.noteArray)
   }
+
+
+  Hide = () => {
+    this.setState({  
+      visible: false
+    })
+
+}
+
+// if(this.state.noteArray[i].id == key){
+//   this.setState((prevState, props) => ({
+//     // Return new array, do not mutate previous state.
+//     noteArray[i]: [
+//         ...prevState.noteArray[i].slice(0, key),
+//         { visibleDone: 'done' },
+//         ...prevState.noteArray[i].slice(key + 1),
+//     ],
+// }));
+// console.log(this.state.noteArray[key])
+// this.state.noteArray[key].visibleDone = "hj";
+// this.setState({noteArray: this.state.noteArray[key]});
+
+// console.log(this.state.noteArray[i].id)
+// console.log("key" + key)
+
+
+
+
+
+
+render() {
+
+
+
+
+  var notes = this.state.noteArray.map((val,key) => {
+    return (
+      <Note  key={key} val={val} keyval={key} deleteMethod={() => this.deleteNote(key)} /> 
+      )});  
+  var notes2 = this.state.noteArray2.map((val,key) => {
+    return (
+      <Modalw key={key} val={val} keyval={key}  visible={this.state.visible} noteText = {this.state.noteText} Hide={() => this.Hide(key)} />
+
+      )});  
+  return (
+     <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
+    >
+    <View style={styles.container}>
+
+    <View style={styles.header}>
+    <Text style={styles.textHeader}>ToDo App</Text>
+    </View>
+
+    <ScrollView style={styles.scrollContainer}>
+    {notes}
+    {notes2}
+    </ScrollView>
+
+    <View style={styles.footer}>
+
+    <TextInput onChangeText={this.noteText}
+    style={styles.textInput}
+    placeholder="Write"
+    placeholderTextColor="black" />
+
+  
+
+    <TouchableOpacity style={styles.dateButton} onPress={this.showPicker}>
+    <FontAwesome name="calendar" size={40} color="#2CCCE4" />
+
+    </TouchableOpacity>
+
+
+    <TouchableOpacity style={styles.addButton} onPress={this.addNote}>
+    <Text style={styles.addButtonText}>+</Text>
+    </TouchableOpacity>
+    </View>
+    <DateTimePicker
+    isVisible={this.state.isVisible}
+    onConfirm={this.handlePicker}
+    onCancel={this.hidePicker}
+    mode={'datetime'}
+    />
+    </View> 
+     </KeyboardAvoidingView>
+    );
+  }
+
 
 }
 
@@ -179,16 +224,18 @@ const styles = StyleSheet.create({
     color:'red',
   },
   header: {
-    backgroundColor: 'blue',
+    backgroundColor: 'grey',
     alignItems:'center',
     justifyContent: 'center',
     borderBottomWidth:2,
-    borderBottomColor:'red',
+    borderBottomColor:'black',
+
   },
   textHeader: {
-    color:'black',
-    fontSize:18,
-    paddingTop:40,
+    color:'white',
+    fontSize:24,
+    paddingTop:30,
+    paddingBottom:10,
   },
   scrollContainer:{
     flex:1,
@@ -200,19 +247,35 @@ const styles = StyleSheet.create({
     left:0,
     right:0,
     zIndex:10,
+    flex:1,
+    flexDirection: 'row',
+    paddingBottom:10,
   },
   addButton:{
-    position:'absolute',
-    bottom:90,
-    right:10,
     zIndex:10,
-    width:50,
-    height:50,
-    backgroundColor:"red",
+    width:40,
+    height:40,  
+    flex:1.2,
+    alignItems:'center',
+    justifyContent: 'center',
+    backgroundColor:"#2CCCE4",
+    borderRadius: 40/2,
+    marginLeft:10,
+      marginRight:10,
+
+  },
+
+  addButtonText:{
+    color:'white',
+    fontSize:20,
+    marginBottom:10,
   },
   textInput:{
     color:'black',
-    fontSize:20,
+    fontSize:18,
+    width:'75%',
+ marginRight:10,
+    paddingLeft:10,
   },
   datePickerBox:{
     marginTop: 9,
@@ -223,7 +286,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 4,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
-    height: 38,
+    height: 40,
     justifyContent:'center'
   },
 
