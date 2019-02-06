@@ -11,7 +11,6 @@ import moment from 'moment';
 const PATTERN = [1000, 2000, 3000]
 
 class Main extends React.Component {
-
   constructor(props){
     super(props);
     this.state = {
@@ -26,45 +25,33 @@ class Main extends React.Component {
       text: '',
       index:'',
       count:0
-
-
     };
   } 
 
   ShowModalFunction = (visible,b) => {
     Vibration.vibrate(PATTERN);
-
     this.setState({
       visible: visible, 
       noteText: b
-      
+    
     })
   }
-
 
   run = (a,b) =>{
     var self = this;
     this._interval = setInterval(() => {
       this.setState({
         now: moment().format() 
-
       });
-
-      console.log(this.state.now + "Das" + a);
       if(this.state.now == a){
-
         this.ShowModalFunction(true,b);
-
       }
     }, 1000); 
-
   } 
-
   handlePicker = (datetime) => {
     this.setState({
       isVisible:false,
       noteData: moment(datetime).format() 
-
     })
   }
 
@@ -83,12 +70,11 @@ class Main extends React.Component {
     clearInterval(this._interval);
   }
 
-
   noteText = (typeText) => {
     this.setState({noteText:typeText});
   }
+  
   addNote = () =>{
-    console.log(this.state.noteArray)
     var d = new Date;
     this.state.noteArray.push({
       'id':this.state.count,
@@ -103,108 +89,67 @@ class Main extends React.Component {
     });
     this.setState({noteArray: this.state.noteArray});
     this.setState({noteArray2: this.state.noteArray2});
-
     this.run(this.state.noteData,this.state.noteText);
     this.state.count++;
-
   }
 
   deleteNote(key){
     this.state.noteArray.splice(key,1);
     this.setState({noteArray:this.state.noteArray});
-    console.log(this.state.noteArray)
   }
-
 
   Hide = () => {
     this.setState({  
       visible: false
     })
-
 }
 
-// if(this.state.noteArray[i].id == key){
-//   this.setState((prevState, props) => ({
-//     // Return new array, do not mutate previous state.
-//     noteArray[i]: [
-//         ...prevState.noteArray[i].slice(0, key),
-//         { visibleDone: 'done' },
-//         ...prevState.noteArray[i].slice(key + 1),
-//     ],
-// }));
-// console.log(this.state.noteArray[key])
-// this.state.noteArray[key].visibleDone = "hj";
-// this.setState({noteArray: this.state.noteArray[key]});
-
-// console.log(this.state.noteArray[i].id)
-// console.log("key" + key)
-
-
-
-
-
-
 render() {
-
-
-
-
   var notes = this.state.noteArray.map((val,key) => {
     return (
       <Note  key={key} val={val} keyval={key} deleteMethod={() => this.deleteNote(key)} /> 
       )});  
-  var notes2 = this.state.noteArray2.map((val,key) => {
+    var notes2 = this.state.noteArray2.map((val,key) => {
     return (
       <Modalw key={key} val={val} keyval={key}  visible={this.state.visible} noteText = {this.state.noteText} Hide={() => this.Hide(key)} />
-
-      )});  
+      )}
+  );  
   return (
      <KeyboardAvoidingView
       style={styles.container}
       behavior="padding"
     >
     <View style={styles.container}>
-
-    <View style={styles.header}>
-    <Text style={styles.textHeader}>ToDo App</Text>
-    </View>
-
-    <ScrollView style={styles.scrollContainer}>
-    {notes}
-    {notes2}
-    </ScrollView>
-
+      <View style={styles.header}>
+      <Text style={styles.textHeader}>ToDo App</Text>
+      </View>
+      <ScrollView style={styles.scrollContainer}>
+        {notes}
+        {notes2}
+      </ScrollView>
     <View style={styles.footer}>
-
-    <TextInput onChangeText={this.noteText}
-    style={styles.textInput}
-    placeholder="Write"
-    placeholderTextColor="black" />
-
-  
-
-    <TouchableOpacity style={styles.dateButton} onPress={this.showPicker}>
-    <FontAwesome name="calendar" size={40} color="#2CCCE4" />
-
+      <TextInput onChangeText={this.noteText}
+      style={styles.textInput}
+      placeholder="Write"
+      placeholderTextColor="black" />
+      <TouchableOpacity style={styles.dateButton} onPress={this.showPicker}>
+      <FontAwesome name="calendar" size={40} color="#2CCCE4" />
     </TouchableOpacity>
-
 
     <TouchableOpacity style={styles.addButton} onPress={this.addNote}>
-    <Text style={styles.addButtonText}>+</Text>
+      <Text style={styles.addButtonText}>+</Text>
     </TouchableOpacity>
     </View>
-    <DateTimePicker
-    isVisible={this.state.isVisible}
-    onConfirm={this.handlePicker}
-    onCancel={this.hidePicker}
-    mode={'datetime'}
-    />
-    </View> 
+        <DateTimePicker
+        isVisible={this.state.isVisible}
+        onConfirm={this.handlePicker}
+        onCancel={this.hidePicker}
+        mode={'datetime'}
+        />
+     </View> 
      </KeyboardAvoidingView>
     );
   }
-
-
 }
 
 const styles = StyleSheet.create({
